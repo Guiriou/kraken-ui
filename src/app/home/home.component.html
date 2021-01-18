@@ -1,0 +1,185 @@
+<div id="header">
+    <p>
+        <img src="../../assets/img/cartoon-2027746_640.png" alt="">
+    </p>
+    <h1>KRAKEN</h1>
+</div>
+
+<!-- Loaing -->
+<div class="container" *ngIf="isLoading">
+  <p class="text-center">
+    
+    <svg version="1.1" id="L7" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+    viewBox="0 0 100 100" enable-background="new 0 0 100 100" xml:space="preserve">
+    <path fill="#e74c3c" d="M31.6,3.5C5.9,13.6-6.6,42.7,3.5,68.4c10.1,25.7,39.2,38.3,64.9,28.1l-3.1-7.9c-21.3,8.4-45.4-2-53.8-23.3
+    c-8.4-21.3,2-45.4,23.3-53.8L31.6,3.5z">
+        <animateTransform 
+          attributeName="transform" 
+          attributeType="XML" 
+          type="rotate"
+          dur="2s" 
+          from="0 50 50"
+          to="360 50 50" 
+          repeatCount="indefinite" />
+    </path>
+    <path fill="#e74c3c" d="M42.3,39.6c5.7-4.3,13.9-3.1,18.1,2.7c4.3,5.7,3.1,13.9-2.7,18.1l4.1,5.5c8.8-6.5,10.6-19,4.1-27.7
+    c-6.5-8.8-19-10.6-27.7-4.1L42.3,39.6z">
+        <animateTransform 
+          attributeName="transform" 
+          attributeType="XML" 
+          type="rotate"
+          dur="1s" 
+          from="0 50 50"
+          to="-360 50 50" 
+          repeatCount="indefinite" />
+    </path>
+    <path fill="#e74c3c" d="M82,35.7C74.1,18,53.4,10.1,35.7,18S10.1,46.6,18,64.3l7.6-3.4c-6-13.5,0-29.3,13.5-35.3s29.3,0,35.3,13.5
+    L82,35.7z">
+        <animateTransform 
+          attributeName="transform" 
+          attributeType="XML" 
+          type="rotate"
+          dur="2s" 
+          from="0 50 50"
+          to="360 50 50" 
+          repeatCount="indefinite" />
+    </path>
+    </svg>
+
+  </p>
+
+</div>
+
+<!-- About kraken -->
+<div class="container" *ngIf="isLoading == false">
+    <div class="row align-items-start">
+        <div class="col-md-4">
+            <div class="list-group">
+                <a href="#" class="list-group-item list-group-item-action" (click)="open(newKraken)" [ngClass]="{'disabled' : kraken }">Création du kraken</a>
+                <a href="#" class="list-group-item list-group-item-action" (click)="open(addTentacle)"  [ngClass]="{'disabled' : kraken && kraken.tentacles?.length >= 8 }">Ajout de tentacule</a>
+                <a href="#" class="list-group-item list-group-item-action" (click)="open(removeTentacle)"  [ngClass]="{'disabled' : kraken && kraken.tentacles?.length == 0 }">Suppression de tentacule</a>
+                <a href="#" class="list-group-item list-group-item-action" (click)="open(addPower)"  [ngClass]="{'disabled' : !canAddPower }">Ajout de pouvoir</a>
+            </div>
+        </div>
+        <div class="col">
+          <h2>Infos kraken</h2>
+          <div *ngIf="kraken">
+            <p>Nom: {{ kraken.name }}</p>
+            <p>Âge: {{ kraken.age }} ans</p>
+            <p>Taille: {{ kraken.size }} mètres</p>
+            <p>Poids: {{ kraken.weight }} tonnes</p>
+            <h4>Tentacules</h4>
+            <ul>
+              <li *ngFor="let tentacle of kraken.tentacles">{{ tentacle.name }}</li>
+            </ul>
+            <h4>Pouvoirs</h4>
+            <ul>
+              <li *ngFor="let power of kraken.powers">{{ power.name }}</li>
+            </ul>
+          </div>
+          <div *ngIf="!kraken">
+            <p class="alert alert-infos">Aucun Kraken!</p>
+          </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Form to create a new kraken -->
+<ng-template #newKraken let-modal>
+    <div class="modal-header">
+      <h4 class="modal-title" id="modal-basic-title">Création du kraken</h4>
+      <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('')">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+    <div class="modal-body">
+      <form [formGroup]="krakenForm" (submit)="createKraken()">
+        <div class="mb-3">
+            <label for="name" class="form-label">Nom</label>
+            <input type="text" class="form-control" id="name" formControlName="name" placeholder="Nom du kraken">
+        </div>
+        <div class="mb-3">
+            <label for="age" class="form-label">Âge</label>
+            <input type="text" class="form-control" id="age" formControlName="age" placeholder="Âge du kraken">
+        </div>
+        <div class="mb-3">
+            <label for="size" class="form-label">Taille en mètre</label>
+            <input type="text" class="form-control" id="size" formControlName="size" placeholder="Taille du kraken">
+        </div>
+        <div class="mb-3">
+            <label for="weight" class="form-label">Poids</label>
+            <input type="text" class="form-control" id="weight" formControlName="weight" placeholder="Poids du kraken">
+        </div>
+        <button class="btn btn-primary float-right" [disabled]="submitted">Créer</button>
+      </form>
+    </div>
+  </ng-template>
+
+<!-- Modal Form to add tentacle -->
+<ng-template #addTentacle let-modal>
+    <div class="modal-header">
+      <h4 class="modal-title" id="modal-basic-title">Ajout de tentacle</h4>
+      <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('')">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+    <div class="modal-body">
+      <p class="alert alert-danger" *ngIf="error">{{ error }}</p>
+      <form [formGroup]="tentacleForm" (submit)="tentacleAdd()" *ngIf="tentacles">
+        <div class="mb-3">
+            <label for="name" class="form-label">Nom du tentacule</label>
+            <select class="form-control form-select" formControlName="name">
+              <option selected disabled value="">Choisissez un nom</option>
+              <option [value]="tentacle.name" *ngFor="let tentacle of tentacles">{{ tentacle.name }}</option>
+            </select>
+        </div>
+        <button class="btn btn-primary float-right" [disabled]="submitted">Ajouter</button>
+      </form>
+    </div>
+</ng-template>
+
+<!-- Modal Form to remove a tentacle -->
+<ng-template #removeTentacle let-modal>
+    <div class="modal-header">
+      <h4 class="modal-title" id="modal-basic-title">Suppression de tentacule</h4>
+      <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('')">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+    <div class="modal-body">
+      <p class="alert alert-danger" *ngIf="error">{{ error }}</p>
+      <form [formGroup]="tentacleForm" (submit)="tentacleDelete()" *ngIf="kraken">
+        <div class="mb-3">
+            <label for="name" class="form-label">Tentacule à supprimer</label>
+            <select class="form-control form-select" formControlName="name">
+              <option selected disabled value="">Choisissez</option>
+              <option [value]="tentacle.id" *ngFor="let tentacle of kraken.tentacles">{{ tentacle.name }}</option>
+            </select>
+        </div>
+        <button class="btn btn-danger float-right" [disabled]="submitted">Supprimer</button>
+      </form>
+    </div>
+</ng-template>
+
+<!-- Modal Form to add a power -->
+<ng-template #addPower let-modal>
+    <div class="modal-header">
+      <h4 class="modal-title" id="modal-basic-title">Ajout de pouvoir</h4>
+      <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('')">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+    <div class="modal-body">
+      <p class="alert alert-danger" *ngIf="error">{{ error }}</p>
+      <form [formGroup]="powerForm" (submit)="powerAdd()" *ngIf="powers">
+        <div class="mb-3">
+            <label for="name" class="form-label">Pouvoir à ajouter</label>
+            <select class="form-control form-select" formControlName="name">
+              <option selected disabled value="">Choisissez</option>
+              <option [value]="power.name" *ngFor="let power of powers">{{ power.name }}</option>
+            </select>
+        </div>
+        <button class="btn btn-primary float-right" [disabled]="submitted">Ajouter</button>
+      </form>
+    </div>
+</ng-template>
